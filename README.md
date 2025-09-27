@@ -65,4 +65,5 @@ Distance:   14 cm (10 ms)
 Distance:  258 cm (10 ms)
 Distance:   14 cm (10 ms)
 ```
+
 The `set_address` example is intenden to change the I2C address of the device, but it's still work in progress.
