@@ -2,7 +2,7 @@
 
 This is a very simple interface to access a SRF02 sonar sensor over I2C using the [wiringPi library](https://github.com/WiringPi/WiringPi) as a backend. 
 
-Usage is straight forward:
+Usage is straight forward (sonarping.c):
 
 ```C
 #include "SRF02.h"
@@ -48,7 +48,7 @@ int main( int argc, char* argv[]) {
 }
 ```
 
-This will show the current heading in 0.5s intervals:
+This will show the current readings as soon as they are available:
 
 ```bash
 pi@raspberrypi:~/SRF02/build $ ./sonarping 0x70
