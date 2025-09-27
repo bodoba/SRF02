@@ -78,7 +78,7 @@ set_address <old address> <new address>
 
 Where `old address` is the current I2C address of the sensor and `new address` is the desired address. Use 7-bit notation for both addresses. For example:
 
-```bash
+```
 $ ./set_address 0x74 0x70
 
 *** Changing SRF02' I2C address from 0x74 to 0x70
@@ -97,6 +97,6 @@ $ ./set_address 0x74 0x70
 ```
 
 The tool will
-* check is the sensor is accessible at the old address
-* reprogramm the adress setting
+* check if the sensor is accessible at the old address
+* reprogramm the address setting
 * check if the new address is reachable
