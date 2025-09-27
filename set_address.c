@@ -66,7 +66,7 @@ int main( int argc, char* argv[]) {
         exit(1);
     }
 
-    // Initialize WiringPi
+    // Initialize wiringPi
     if (wiringPiSetup() == -1) {
         fprintf( stderr, "ERROR: wiringPi setup failed\n");
         exit(1);
@@ -86,7 +86,7 @@ int main( int argc, char* argv[]) {
     if (sendCmd(dev, 0xAA) != 0) return 1;
     if (sendCmd(dev, 0xA5) != 0) return 1;
 
-    // send new address
+    // send new address in 8-bit notation
     int newAddr8 = (newAddr<<1);
     if (sendCmd(dev, newAddr8) != 0) return 1;
 
