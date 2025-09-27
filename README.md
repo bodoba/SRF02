@@ -2,7 +2,7 @@
 
 This is a very simple interface to access a SRF02 sonar sensor over I2C using the [wiringPi library](https://github.com/WiringPi/WiringPi) as a backend. 
 
-Usage is straight forward (sonarping.c):
+Usage is straight forward (see `sonarping.c`):
 
 ```C
 #include "SRF02.h"
@@ -65,5 +65,4 @@ Distance:   14 cm (10 ms)
 Distance:  258 cm (10 ms)
 Distance:   14 cm (10 ms)
 ```
-
-The `i2chelper` functions reassemble some convenience methods from `I2Cdev` and are used internally.
+The `set_address` example is intenden to change the I2C address of the device, but it's still work in progress.
