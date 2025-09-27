@@ -23,31 +23,47 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "SRF02.h"
+#include <wiringPi.h>
+#include <wiringPiI2C.h>
 
-#define OLD_ADDR 0x70  // SRF02 default address
-#define NEW_ADDR 0x74  // New address: 0xE0 to 0xFE, only even numbers
+#define SRF02_COMMAND_REG    0x00
 
 int sendCmd(int fd, int cmd) {
+    printf("  Writing 0x%02x to register 0x%02x\n", cmd, SRF02_COMMAND_REG);
     if (wiringPiI2CWriteReg8(fd, SRF02_COMMAND_REG, cmd) == -1) {
-        fprintf( stderr, "ERROR: Failed to write 0x%02x to register 0x%02x\n", cmd, SRF02_COMMAND_REG);
+        fprintf( stderr, "  ERROR: Failed to write 0x%02x to register 0x%02x\n", cmd, SRF02_COMMAND_REG);
         return -1;
     }
-    usleep(100000);
+    usleep(50000);
     return 0;
 }
 
-int main( int argc, char* argv[]) {
-    int oldAddr = OLD_ADDR;
-    int newAddr = NEW_ADDR;
+int openDevice(int addr) {
+    int dev = wiringPiI2CSetup(addr);
 
-
-    // allow optional commandline parameters: "old address" "new address" in hex notation  
-    if (argc==2 || argc==3) {
-        sscanf(argv[1], "%x", &oldAddr);
+    if (dev >= 0) {
+        // check is the device is actually present by trying to read the command register
+        int val = wiringPiI2CReadReg8(dev, SRF02_COMMAND_REG);
+        if (val<0) dev=-1;
     }
+    return dev;
+}
+
+int main( int argc, char* argv[]) {
+    int oldAddr, newAddr;
+
+    // require commandline parameters: "old address" "new address" in hex notation  
     if (argc==3) {
+        // parse commandline
+        sscanf(argv[1], "%x", &oldAddr);    
         sscanf(argv[2], "%x", &newAddr);
+    } else {
+        // provide help
+        printf("\nPlease provide the okd and the new address of the device in hex notation (7-bit) on the command line!\n\n");
+        printf("For example:\n");
+        printf("\t%s 0x70 0x72\n\n", argv[0]);
+        printf("will expect the old addres to be 0x70 and change it to 0x72\n\n");
+        exit(1);
     }
 
     // Initialize WiringPi
@@ -57,22 +73,33 @@ int main( int argc, char* argv[]) {
     }
 
     // initialize sensor
-    int srf02Device = srf02Init(oldAddr);
-    if (srf02Device < 0) {
+    int dev = openDevice(oldAddr);
+    if (dev < 0) {
         fprintf( stderr, "ERROR: SRF02 not found at 0x%02x\n", oldAddr);
         exit(1);
     }
-
-    printf("Changing SRF02' I2C address from 0x%02x to 0x%02x\n", oldAddr, newAddr);
+    
+    printf("\n*** Changing SRF02' I2C address from 0x%02x to 0x%02x\n\n", oldAddr, newAddr);
     
     // prepare for address change
-    if (sendCmd(srf02Device, 0xA0) != 0) return 1;
-    if (sendCmd(srf02Device, 0xAA) != 0) return 1;
-    if (sendCmd(srf02Device, 0xA5) != 0) return 1;
+    if (sendCmd(dev, 0xA0) != 0) return 1;
+    if (sendCmd(dev, 0xAA) != 0) return 1;
+    if (sendCmd(dev, 0xA5) != 0) return 1;
 
     // send new address
-    if (sendCmd(srf02Device, newAddr) != 0) return 1;
+    int newAddr8 = (newAddr<<1);
+    if (sendCmd(dev, newAddr8) != 0) return 1;
 
-    printf("\n*** Address change complete! ***\n\n");
-    printf("The new device address is: 0x%02x\n", newAddr);
+    printf("\n*** Address change sequence complete\n\n");
+
+    printf("  Check if device reacts to new address 0x%02x\n");
+    
+    int devNew = openDevice(newAddr);
+    if (devNew < 0) {
+        fprintf( stderr, "  -> SRF02 not found at 0x%02x\n", newAddr);
+        printf("\n*** Address change failed!\n\n");
+    } else {
+        printf("  -> The new device address is working\n", newAddr);
+        printf("\n*** Address change was successful\n\n");
+    }
 }

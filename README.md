@@ -1,6 +1,8 @@
 # Support for SRF02 sonar sensor with wiringPi in plain C
 
-This is a very simple interface to access a SRF02 sonar sensor over I2C using the [wiringPi library](https://github.com/WiringPi/WiringPi) as a backend. 
+## Support functions to measure distance using the SRF02 sensor
+
+This is a very simple interface to access a SRF02 sonar sensor over I2C using the [wiringPi library](https://github.com/WiringPi/WiringPi) as a backend.
 
 Usage is straight forward (see `sonarping.c`):
 
@@ -51,7 +53,7 @@ int main( int argc, char* argv[]) {
 This will show the current readings as soon as they are available:
 
 ```bash
-pi@raspberrypi:~/SRF02/build $ ./sonarping 0x70
+$ ./sonarping 0x70
 Distance:   14 cm (20 ms)
 Distance:  258 cm (30 ms)
 Distance:  213 cm (30 ms)
@@ -66,4 +68,35 @@ Distance:  258 cm (10 ms)
 Distance:   14 cm (10 ms)
 ```
 
-The `set_address` example is intenden to change the I2C address of the device, but it's still work in progress.
+## Chaning the I2C address of the sensor
+
+The `set_address` application lets you change the i2c address of the sensor.
+
+```bash
+set_address <old address> <new address>
+```
+
+Where `old address` is the current I2C address of the sensor and `new address` is the desired address. Use 7-bit notation for both addresses. For example:
+
+```bash
+$ ./set_address 0x74 0x70
+
+*** Changing SRF02' I2C address from 0x74 to 0x70
+
+  Writing 0xa0 to register 0x00
+  Writing 0xaa to register 0x00
+  Writing 0xa5 to register 0x00
+  Writing 0xe0 to register 0x00
+
+*** Address change sequence complete
+
+  Check if device reacts to new address 0x00
+  -> The new device address is working
+
+*** Address change was successful
+```
+
+The tool will
+* check is the sensor is accessible at the old address
+* reprogramm the adress setting
+* check if the new address is reachable

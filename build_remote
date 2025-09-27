@@ -4,14 +4,19 @@
 host=192.168.100.103
 proj=SRF02
 
+
 # Pack sources locally
-tar --exclude build --exclude build_remote -czf /tmp/code.tgz . 
+echo -n "-- Create archive"
+tar --exclude build --exclude build_remote --exclude-vcs --no-xattrs --no-mac-metadata -czf /tmp/code.tgz . 
+echo " done"
 
 # copy archive to target
-scp /tmp/code.tgz ${host}:/tmp
+echo -n "-- Transfer files to build client (${host})"
+scp -q /tmp/code.tgz ${host}:/tmp
+echo " done"
 
-# unpcak and build
+# unpack and build
 ssh ${host} -x "mkdir -p ${proj}/build &&                      \
-                (cd ${proj} && tar xzvf /tmp/code.tgz  &&      \
+                (cd ${proj} && tar xzf /tmp/code.tgz  &&      \
                 (cd build   && cmake ../CMakeLists.txt && make  \
               ))"
