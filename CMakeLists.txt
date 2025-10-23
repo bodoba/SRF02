@@ -26,7 +26,7 @@ project(TankBot VERSION 0.1.0 LANGUAGES C)
 include_directories(/opt/local/include)
 link_directories(/opt/local/lib)
 
-add_executable(sonarping   sonarping.c   SRF02.c  SRF02.h)
+add_executable(sonarping sonarping.c SRF02.c SRF02.h)
 target_link_libraries(sonarping wiringPi)
 
 add_executable(set_address set_address.c)

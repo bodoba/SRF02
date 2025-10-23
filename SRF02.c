@@ -1,3 +1,4 @@
+
 /* *********************************************************************************** */
 /*                                                                                     */
 /*  Controll of a SRF02 sonar sensor                                                   */
@@ -46,6 +47,17 @@ int srf02Read(int dev) {
 
     if ( (msb != 0xFF) && (lsb != 0xFF)) {
         distance = (msb << 8) | lsb;
+    }
+    return distance;
+}
+
+int srf02GetDistance(int dev, int mode, int *timeout) {
+    srf02Ping(dev, mode);
+    int distance = -1;
+    while (distance < 0 && *timeout > 0) {
+        delay(5); // wait 5ms before next try
+        *timeout -= 5;
+        distance = srf02Read(dev);
     }
     return distance;
 }

@@ -59,4 +59,16 @@ void srf02Ping(int dev, int mode);
  * *********************************************************************************** */
 int srf02Read(int dev);
 
+/* *********************************************************************************** *
+ * @brief Get distance
+ * Sends a ping and polls sensor for distance reading. A maximum timeout will be
+ * respected and the remining timout time will be returned.
+ * @param dev Device hanlde
+ * @param *timeout Maximum time in ms to wait for the measurement. If the sensor 
+ *                 returns a qucker reply, the remaining time will be in the variable. 
+ *                 Sensor shoudl return a value within 70ms
+ * @return measured distance, or -1 no ping reply was received  
+ * *********************************************************************************** */
+int srf02GetDistance(int dev, int mode, int *timeout);
+
 #endif

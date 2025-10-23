@@ -42,22 +42,14 @@ int main( int argc, char* argv[]) {
     }
 
     for ( ;; ) {
-        // request distance in cm
-        srf02Ping(srf02Device, SRF02_CENTIMETERS);
-        
         // poll device until valid reading is returned, or timeout (100ms) expired
-        int timeout=10; // 10*10ms -> break after 100ms
-        int distance = -1;
-        do {
-            distance = srf02Read(srf02Device);
-            delay(10);
-            timeout--;
-        } while (timeout > 0 && distance < 0);
-
+        int timeout=100; // break after 100ms
+        int distance = srf02GetDistance(srf02Device, SRF02_CENTIMETERS, &timeout);
+        
         if (distance >= 0) {
-            printf("Distance: % 4d cm (%d ms)\n", distance, (100-timeout*10));
+            printf("Distance: % 4d cm (%d ms)\n", distance, (100-timeout));
         } else {
-            printf("No valid reading returned after % 4d ms\n",  (100-timeout*10) );
+            printf("No valid reading returned after % 4d ms\n",  (100-timeout) );
         }
     }
 }

@@ -1,0 +1,22 @@
+{
+    "C_Cpp.default.customConfigurationVariables": {},
+    "C_Cpp.default.includePath": [
+        "/opt/local/include/",
+        "stubs"
+    ],
+    "files.associations": {
+        "stdio.h": "c",
+        "pca9685.h": "c",
+        "cstdlib": "c"
+    },
+    "VsCodeTaskButtons.tasks": [
+        {
+            "label": "$(run-below) T-Run",
+            "task": "Run on Target"
+        },
+        {
+            "label": "$(settings-gear) T-Build",
+            "task": "Build on Target"
+        }
+    ]
+}
